@@ -11,7 +11,30 @@ const profileRoutes = require('./routes/profileRoutes');
 const trainerRoutes = require('./routes/trainerRoutes');
 
 const app = express();
-app.use(cors());
+//app.use(cors());
+//app.use(cors({ origin: "*" }));
+
+
+const allowedOrigins = [
+  "http://localhost:5173",              // local frontend (Vite)
+  "https://supervisortrainingcentre.onrender.com" // backend self
+  // later you will add Vercel URL here
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (Postman, curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 

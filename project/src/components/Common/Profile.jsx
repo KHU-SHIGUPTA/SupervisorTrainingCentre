@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Save, Upload, User, CheckCircle, Edit, Camera } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useEffect } from "react";
 
 export default function Profile() {
+  
+const API_URL = import.meta.env.VITE_API_URL;
   const { user, updateUser } = useAuth();
   const status = user?.role === 'director'? 'Active': user?.joinDate? 'Active': 'Inactive';
   const [isEditing, setIsEditing] = useState(false);
@@ -57,17 +60,19 @@ const handleSave = async () => {
       active: status === 'Active'
     };
 
-    const res = await fetch('http://localhost:5000/api/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profileData)
-    });
+    // const res = await fetch('http://localhost:5000/api/profile', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(profileData)
+    // });
 
+     const res = await fetch(`${API_URL}/api/profile`) ;
     const data = await res.json();
 
     if (data.success) {
       // ✅ fetch updated profile from backend
-      const updatedRes = await fetch(`http://localhost:5000/api/profile/${user.id}`);
+      const updatedRes = await fetch(`${API_URL}/api/profile/${user.id}`)
+      // fetch(`http://localhost:5000/api/profile/${user.id}`);
       const updatedProfile = await updatedRes.json();
 
       // ✅ Update context + local state

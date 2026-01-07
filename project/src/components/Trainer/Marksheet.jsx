@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 export default function Marksheet() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
   const { getTraineesByTrainer, updateTrainee } = useData();
   const [selectedTrainee, setSelectedTrainee] = useState('');
@@ -93,11 +94,12 @@ export default function Marksheet() {
   };
 
   try {
-    const response = await fetch('http://localhost:5000/api/marksheet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSave)
-    });
+    // const response = await fetch('http://localhost:5000/api/marksheet', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(dataToSave)
+    // });
+    const response=fetch(`${API_URL}/api/marksheet`);
 
     if (response.ok) {
       setShowSuccess(true);

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import api from "../api";
 
 const DataContext = createContext(undefined);
 
@@ -68,7 +69,8 @@ export function DataProvider({ children }) {
 
   const fetchTrainees = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/trainees');
+      // const res = await axios.get('http://localhost:5000/api/trainees');
+      const res = await api.get("/api/trainees");
       setTrainees(res.data||[]);
       //setTrainees(res.data||[]);
     } catch (err) {
@@ -88,7 +90,8 @@ export function DataProvider({ children }) {
 
   const fetchTrainers = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/trainers');
+    const res = await api.get("/api/trainers");                                                                                                                                                                                                                                                                                                    
+    //axios.post('http://localhost:5000/api/trainers', data);
     const mapped = (res.data||[]).map(t => ({
       ...t,
       name: t.fullName || t.name || t.email,
@@ -103,7 +106,8 @@ export function DataProvider({ children }) {
   const addTrainee = async (traineeData) => {
     try {
       console.log('📤 Sending trainee to backend:', traineeData);
-      const res = await axios.post('http://localhost:5000/api/trainees', traineeData);
+      const res = api.post("/api/trainees", traineeData);
+      //await axios.post('http://localhost:5000/api/trainees', traineeData);
       const newTrainee = {
         ...traineeData,
         id: res.data.id,
@@ -118,7 +122,8 @@ export function DataProvider({ children }) {
 
   const updateTrainee = async (id, updates) => {
     try {
-      await axios.put(`http://localhost:5000/api/trainees/${id}`, updates);
+      await api.put(`/api/trainees/${id}`, updates);
+      //await axios.put(`http://localhost:5000/api/trainees/${id}`, updates);
       setTrainees(prev =>
         prev.map(t => (t.id === id ? { ...t, ...updates } : t))
       );
@@ -129,7 +134,8 @@ export function DataProvider({ children }) {
 
   const deleteTrainee = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/trainees/${id}`);
+      await api.delete(`/api/trainees/${id}`);
+      //axios.delete(`http://localhost:5000/api/trainees/${id}`);
       setTrainees(prev => prev.filter(t => t.id !== id));
     } catch (err) {
       console.error('Error deleting trainee:', err?.response?.data || err.message);
@@ -138,7 +144,8 @@ export function DataProvider({ children }) {
 
   const addTrainer = async (trainerData) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/trainers', trainerData);
+      const res = await api.post("/api/trainers", trainerData);
+      // axios.post('http://localhost:5000/api/trainers', trainerData);
       const newTrainer = { ...trainerData, id: res.data.id };
       setTrainers(prev => [...prev, newTrainer]);
     } catch (err) {
@@ -149,7 +156,8 @@ export function DataProvider({ children }) {
 
   const updateTrainer = async (id, updates) => {
     try {
-      await axios.put(`http://localhost:5000/api/trainers/${id}`, updates);
+      await api.put(`/api/trainers/${id}`, updates);
+      //axios.put(`http://localhost:5000/api/trainers/${id}`, updates);
       setTrainers(prev => prev.map(t => (t.id === id ? { ...t, ...updates } : t)));
     } catch (err) {
       console.error('Error updating trainer:', err?.response?.data || err.message);
@@ -158,7 +166,8 @@ export function DataProvider({ children }) {
 
   const deleteTrainer = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/trainers/${id}`);
+      await api.delete(`/api/trainers/${id}`);
+     // axios.delete(`http://localhost:5000/api/trainers/${id}`);
       setTrainers(prev => prev.filter(t => t.id !== id));
     } catch (err) {
       console.error('Error deleting trainer:', err?.response?.data || err.message);
@@ -169,7 +178,8 @@ export function DataProvider({ children }) {
   /*attendance*/
    const fetchAllAttendance = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/attendance');
+      const res = await api.get("/api/attendance");
+      //axios.get('http://localhost:5000/api/attendance');
       const map = {};
       res.data.forEach(record => {
         if (!map[record.trainee_id]) map[record.trainee_id] = [];
@@ -183,7 +193,8 @@ export function DataProvider({ children }) {
 
   const markAttendance = async (trainee_id, date, status) => {
     try {
-      await axios.post('http://localhost:5000/api/attendance', { trainee_id, date, status });
+      await api.post("/api/attendance", { trainee_id, date, status });
+      //axios.post('http://localhost:5000/api/attendance', { trainee_id, date, status });
       setAttendanceMap(prev => {
         const updated = { ...prev };
         if (!updated[trainee_id]) updated[trainee_id] = [];
